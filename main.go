@@ -1,24 +1,33 @@
 package main
 
 import (
-	"flag"
 	"fmt"
+	"github.com/bwmarrin/discordgo"
+	"github.com/corentings/UCA-discord-bot/commands"
+	"github.com/joho/godotenv"
+	"log"
 	"os"
 	"os/signal"
-	"syscall"
-
-	"github.com/bwmarrin/discordgo"
 )
 
 // Variables used for command line parameters
 var (
-	Token string
+	Token   string
+	GuildID string
 )
 
 func init() {
+	loadVar()
+}
 
-	flag.StringVar(&Token, "t", "", "Bot Token")
-	flag.Parse()
+func loadVar() {
+	// Load the .env file
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+	Token = os.Getenv("TOKEN")
+	GuildID = "879730620157292636"
 }
 
 func main() {
@@ -30,12 +39,6 @@ func main() {
 		return
 	}
 
-	// Register the messageCreate func as a callback for MessageCreate events.
-	dg.AddHandler(messageCreate)
-
-	// In this example, we only care about receiving message events.
-	dg.Identify.Intents = discordgo.IntentsGuildMessages
-
 	// Open a websocket connection to Discord and begin listening.
 	err = dg.Open()
 	if err != nil {
@@ -43,32 +46,41 @@ func main() {
 		return
 	}
 
-	// Wait here until CTRL-C or other term signal is received.
-	fmt.Println("Bot is now running.  Press CTRL-C to exit.")
-	sc := make(chan os.Signal, 1)
-	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
-	<-sc
+	commandHandlers := commands.GetCommandHandlers()
 
-	// Cleanly close down the Discord session.
-	dg.Close()
-}
+	dg.AddHandler(func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+		if h, ok := commandHandlers[i.ApplicationCommandData().Name]; ok {
+			h(s, i)
+		}
+	})
 
-// This function will be called (due to AddHandler above) every time a new
-// message is created on any channel that the authenticated bot has access to.
-func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
+	myCommands := commands.GetCommands()
 
-	// Ignore all messages created by the bot itself
-	// This isn't required in this specific example but it's a good practice.
-	if m.Author.ID == s.State.User.ID {
-		return
-	}
-	// If the message is "ping" reply with "Pong!"
-	if m.Content == "ping" {
-		s.ChannelMessageSend(m.ChannelID, "Pong!")
+	registeredCommands := make([]*discordgo.ApplicationCommand, len(myCommands))
+	for i, v := range myCommands {
+		cmd, err := dg.ApplicationCommandCreate(dg.State.User.ID, GuildID, v)
+		if err != nil {
+			log.Panicf("Cannot create '%v' command: %v", v.Name, err)
+		}
+		registeredCommands[i] = cmd
 	}
 
-	// If the message is "pong" reply with "Ping!"
-	if m.Content == "pong" {
-		s.ChannelMessageSend(m.ChannelID, "Ping!")
+	defer dg.Close()
+
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, os.Interrupt)
+	log.Println("Press Ctrl+C to exit")
+	<-stop
+
+	if true {
+		log.Println("Removing commands...")
+		for _, v := range registeredCommands {
+			err := dg.ApplicationCommandDelete(dg.State.User.ID, GuildID, v.ID)
+			if err != nil {
+				log.Panicf("Cannot delete '%v' command: %v", v.Name, err)
+			}
+		}
 	}
+
+	log.Println("Gracefully shutting down.")
 }
