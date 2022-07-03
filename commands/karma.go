@@ -6,7 +6,7 @@ import (
 	"github.com/corentings/UCA-discord-bot/models"
 )
 
-var Karma = discordgo.ApplicationCommand{
+var KarmaCommand = discordgo.ApplicationCommand{
 	Name:        "karma",
 	Description: "Karma main command",
 	Options: []*discordgo.ApplicationCommandOption{
@@ -39,7 +39,7 @@ var Karma = discordgo.ApplicationCommand{
 	},
 }
 
-func KarmaCommand() func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+func KarmaCommandHandler() func(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	return func(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		options := i.ApplicationCommandData().Options
 		content := ""
