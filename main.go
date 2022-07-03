@@ -1,36 +1,35 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"github.com/corentings/UCA-discord-bot/commands"
-	"github.com/joho/godotenv"
 	"log"
 	"os"
 	"os/signal"
 )
 
-// Variables used for command line parameters
-var (
-	Token   string
-	GuildID string
-)
+var mg MongoInstance
 
 func init() {
 	loadVar()
 }
 
-func loadVar() {
-	// Load the .env file
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-	Token = os.Getenv("TOKEN")
-	GuildID = "879730620157292636"
-}
-
 func main() {
+	// Try to connect to the database
+	if err := Connect(); err != nil {
+		log.Panic("Can't connect database:", err.Error())
+	}
+	fmt.Println("Connected to database")
+
+	defer func() {
+		fmt.Println("Disconnect from database")
+		err := mg.Client.Disconnect(context.TODO())
+		if err != nil {
+			return
+		}
+	}()
 
 	// Create a new Discord session using the provided bot token.
 	dg, err := discordgo.New("Bot " + Token)
