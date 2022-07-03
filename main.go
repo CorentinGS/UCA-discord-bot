@@ -5,12 +5,28 @@ import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"github.com/corentings/UCA-discord-bot/commands"
+	"github.com/corentings/UCA-discord-bot/database"
+	"github.com/joho/godotenv"
 	"log"
 	"os"
 	"os/signal"
 )
 
-var mg MongoInstance
+var (
+	Token   string
+	GuildID string
+)
+
+func loadVar() {
+	// Load the .env file
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+	Token = os.Getenv("TOKEN")
+	GuildID = os.Getenv("GUILD_ID")
+
+}
 
 func init() {
 	loadVar()
@@ -18,14 +34,14 @@ func init() {
 
 func main() {
 	// Try to connect to the database
-	if err := Connect(); err != nil {
+	if err := database.Connect(); err != nil {
 		log.Panic("Can't connect database:", err.Error())
 	}
 	fmt.Println("Connected to database")
 
 	defer func() {
 		fmt.Println("Disconnect from database")
-		err := mg.Client.Disconnect(context.TODO())
+		err := database.Mg.Client.Disconnect(context.TODO())
 		if err != nil {
 			return
 		}
