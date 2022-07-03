@@ -13,21 +13,42 @@ var (
 			Description: "Returns the version of the bot",
 		},
 		{
-			Name:        "add-karma",
-			Description: "Add karma to an user",
+			Name:        "karma",
+			Description: "Karma main command",
 			Options: []*discordgo.ApplicationCommandOption{
 				{
-					Type:        discordgo.ApplicationCommandOptionUser,
-					Name:        "user-option",
-					Description: "User option",
-					Required:    true,
-				}},
+					Name:        "add",
+					Description: "add karma",
+					Type:        discordgo.ApplicationCommandOptionSubCommand,
+					Options: []*discordgo.ApplicationCommandOption{
+						{
+							Type:        discordgo.ApplicationCommandOptionUser,
+							Name:        "user-option",
+							Description: "User option",
+							Required:    true,
+						},
+					},
+				},
+				{
+					Name:        "show",
+					Description: "show karma",
+					Type:        discordgo.ApplicationCommandOptionSubCommand,
+					Options: []*discordgo.ApplicationCommandOption{
+						{
+							Type:        discordgo.ApplicationCommandOptionUser,
+							Name:        "user-option",
+							Description: "User option",
+							Required:    false,
+						},
+					},
+				},
+			},
 		},
 	}
 
 	commandHandlers = map[string]func(s *discordgo.Session, i *discordgo.InteractionCreate){
 		"get-version": VersionCommand(),
-		"add-karma":   AddKarmaCommand(),
+		"karma":       KarmaCommand(),
 	}
 )
 
