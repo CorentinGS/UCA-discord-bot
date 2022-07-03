@@ -62,7 +62,7 @@ func Connect() error {
 
 	fmt.Println("Connected to mongoDB !")
 	// get collection as ref
-	db := client.Database("memnix")
+	db := client.Database("uca")
 
 	mg = MongoInstance{Client: client, Db: db}
 
