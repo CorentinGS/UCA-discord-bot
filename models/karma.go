@@ -36,7 +36,7 @@ func (karma *Karma) UpdateKarma() error {
 	return nil
 }
 
-func (karma *Karma) SetKarma(userID string, guildID string, value uint) {
+func (karma *Karma) SetKarma(userID, guildID string, value uint) {
 	karma.UserID = userID
 	karma.GuildID = guildID
 	karma.Value = value
@@ -46,7 +46,7 @@ func (karma *Karma) AddKarma(amount uint) {
 	karma.Value += amount
 }
 
-func GetKarma(userID string, guildID string) (*Karma, error) {
+func GetKarma(userID, guildID string) (*Karma, error) {
 	collection := database.Mg.Db.Collection("karma")
 	result := new(Karma)
 	err := collection.FindOne(context.TODO(), bson.D{{"userid", userID}, {"guildid", guildID}}).Decode(&result)
@@ -65,7 +65,7 @@ func GetKarma(userID string, guildID string) (*Karma, error) {
 	return result, nil
 }
 
-func IncreaseKarma(userID string, guildID string) (*Karma, error) {
+func IncreaseKarma(userID, guildID string) (*Karma, error) {
 	collection := database.Mg.Db.Collection("karma")
 	result := new(Karma)
 	err := collection.FindOne(context.TODO(), bson.D{{"userid", userID}, {"guildid", guildID}}).Decode(&result)

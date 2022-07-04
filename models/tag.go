@@ -14,7 +14,7 @@ type Tag struct {
 	Content   string
 }
 
-func (tag *Tag) SetTag(GuildID string, ChannelID string, Key string, Content string) {
+func (tag *Tag) SetTag(GuildID, ChannelID, Key, Content string) {
 	tag.Key = Key
 	tag.ChannelID = ChannelID
 	tag.GuildID = GuildID
@@ -48,7 +48,7 @@ func (tag *Tag) UpdateTag() error {
 	return nil
 }
 
-func GetTag(key string, guildID string) (*Tag, error) {
+func GetTag(key, guildID string) (*Tag, error) {
 	collection := database.Mg.Db.Collection("tags")
 	result := new(Tag)
 	err := collection.FindOne(context.TODO(), bson.D{{"key", key}, {"guildid", guildID}}).Decode(&result)

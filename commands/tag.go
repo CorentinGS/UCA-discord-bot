@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"github.com/corentings/UCA-discord-bot/models"
+	"github.com/corentings/UCA-discord-bot/utils"
+	"os"
 )
 
 var TagCommand = discordgo.ApplicationCommand{
@@ -73,6 +75,11 @@ func TagCommandHandler() func(s *discordgo.Session, i *discordgo.InteractionCrea
 		// and subcommand groups are provided through the arguments.
 		switch options[0].Name {
 		case "add":
+			var AdminRole = os.Getenv("ADMIN_ROLE")
+			if !utils.ExistsInArray(i.Member.Roles, AdminRole) {
+				responseContent = "You are not an admin"
+				break
+			}
 			commandOptions := options[0].Options
 			key := commandOptions[0].StringValue()
 			content := commandOptions[1].StringValue()
@@ -93,6 +100,11 @@ func TagCommandHandler() func(s *discordgo.Session, i *discordgo.InteractionCrea
 			}
 
 		case "delete":
+			var AdminRole = os.Getenv("ADMIN_ROLE")
+			if !utils.ExistsInArray(i.Member.Roles, AdminRole) {
+				responseContent = "You are not an admin"
+				break
+			}
 			commandOptions := options[0].Options
 			key := commandOptions[0].StringValue()
 			err := deleteTag(key, i.GuildID)
