@@ -17,12 +17,13 @@ var (
 			Name: "tag-add",
 			Type: discordgo.MessageApplicationCommand,
 		},
+		&TagCommand,
 	}
 
 	commandHandlers = map[string]func(s *discordgo.Session, i *discordgo.InteractionCreate){
 		"get-version": VersionCommand(),
 		"karma":       KarmaCommandHandler(),
-		"tag-add":     TagCommandHandler(),
+		"tag":         TagCommandHandler(),
 	}
 )
 
@@ -32,15 +33,4 @@ func GetCommands() []*discordgo.ApplicationCommand {
 
 func GetCommandHandlers() map[string]func(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	return commandHandlers
-}
-
-func TagCommandHandler() func(s *discordgo.Session, i *discordgo.InteractionCreate) {
-	return func(s *discordgo.Session, i *discordgo.InteractionCreate) {
-		s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-			Type: discordgo.InteractionResponseChannelMessageWithSource,
-			Data: &discordgo.InteractionResponseData{
-				Content: "The selected message is: " + i.ApplicationCommandData().Resolved.Messages[i.ApplicationCommandData().TargetID].Content,
-			},
-		})
-	}
 }

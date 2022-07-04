@@ -2,10 +2,10 @@ package models
 
 import (
 	"context"
-	"fmt"
 	"github.com/corentings/UCA-discord-bot/database"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"log"
 )
 
 type Karma struct {
@@ -19,7 +19,7 @@ func (karma *Karma) CreateKarma() error {
 
 	_, err := collection.InsertOne(context.TODO(), karma)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return err
 	}
 	return nil
@@ -30,7 +30,7 @@ func (karma *Karma) UpdateKarma() error {
 
 	_, err := collection.UpdateOne(context.TODO(), bson.D{{"userid", karma.UserID}, {"guildid", karma.GuildID}}, bson.D{{"$set", bson.D{{"value", karma.Value}}}})
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return err
 	}
 	return nil

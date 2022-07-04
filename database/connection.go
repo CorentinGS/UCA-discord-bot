@@ -2,7 +2,6 @@ package database
 
 import (
 	"context"
-	"fmt"
 	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -60,7 +59,7 @@ func Connect() error {
 		return e
 	}
 
-	fmt.Println("Connected to mongoDB !")
+	log.Println("Connected to mongoDB !")
 	// get collection as ref
 	db := client.Database("uca")
 

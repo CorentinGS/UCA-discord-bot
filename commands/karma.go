@@ -48,7 +48,6 @@ func KarmaCommandHandler() func(s *discordgo.Session, i *discordgo.InteractionCr
 		// and subcommand groups are provided through the arguments.
 		switch options[0].Name {
 		case "add":
-			content = "Add karma command"
 			commandOptions := options[0].Options
 			for _, opt := range commandOptions {
 				if opt.Name == "user-option" {
