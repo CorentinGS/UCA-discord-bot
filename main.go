@@ -37,7 +37,7 @@ func main() {
 	if err := database.Connect(); err != nil {
 		log.Panic("Can't connect database:", err.Error())
 	}
-	fmt.Println("Connected to database")
+	log.Println("Connected to database")
 
 	defer func() {
 		fmt.Println("Disconnect from database")
@@ -50,14 +50,14 @@ func main() {
 	// Create a new Discord session using the provided bot token.
 	dg, err := discordgo.New("Bot " + Token)
 	if err != nil {
-		fmt.Println("error creating Discord session,", err)
+		log.Println("error creating Discord session,", err)
 		return
 	}
 
 	// Open a websocket connection to Discord and begin listening.
 	err = dg.Open()
 	if err != nil {
-		fmt.Println("error opening connection,", err)
+		log.Println("error opening connection,", err)
 		return
 	}
 
