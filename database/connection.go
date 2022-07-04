@@ -1,8 +1,7 @@
-package main
+package database
 
 import (
 	"context"
-	"fmt"
 	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -17,9 +16,9 @@ type MongoInstance struct {
 	Db     *mongo.Database
 }
 
+var Mg MongoInstance
+
 var (
-	Token    string
-	GuildID  string
 	MongoURL string
 )
 
@@ -29,8 +28,6 @@ func loadVar() {
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
-	Token = os.Getenv("TOKEN")
-	GuildID = os.Getenv("GUILD_ID")
 
 	if os.Getenv("APP_ENV") == "development" {
 		log.Println("Running in development mode")
@@ -43,6 +40,8 @@ func loadVar() {
 }
 
 func Connect() error {
+
+	loadVar()
 
 	// Set client options
 	clientOptions := options.Client().ApplyURI(MongoURL)
@@ -60,11 +59,11 @@ func Connect() error {
 		return e
 	}
 
-	fmt.Println("Connected to mongoDB !")
+	log.Println("Connected to mongoDB !")
 	// get collection as ref
 	db := client.Database("uca")
 
-	mg = MongoInstance{Client: client, Db: db}
+	Mg = MongoInstance{Client: client, Db: db}
 
 	return nil
 }
