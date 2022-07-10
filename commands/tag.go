@@ -82,14 +82,14 @@ func TagCommandHandler() func(s *discordgo.Session, i *discordgo.InteractionCrea
 			})
 			return
 		case "get":
-			commandOptions := options[0].Options
-			key := commandOptions[0].StringValue()
-			tag, err := models.GetTag(key, i.GuildID)
-			if err != nil {
-				responseContent = err.Error()
-			} else {
-				responseContent = fmt.Sprintf("Tag %s:\n%s", key, tag.Content)
-			}
+			responseEmbed := tag.GetTagCommandHandler(s, i)
+			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+				Type: discordgo.InteractionResponseChannelMessageWithSource,
+				Data: &discordgo.InteractionResponseData{
+					Embeds: []*discordgo.MessageEmbed{responseEmbed},
+				},
+			})
+			return
 
 		case "delete":
 			var AdminRole = os.Getenv("ADMIN_ROLE")

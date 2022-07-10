@@ -23,6 +23,10 @@ func CreateSuccessEmbed(s *discordgo.Session, i *discordgo.InteractionCreate, me
 	return createEmbed(s, i, "Success", fmt.Sprintf("✅ %s", message), GREEN)
 }
 
+func CreateResponseEmbed(s *discordgo.Session, i *discordgo.InteractionCreate, title, content string) *discordgo.MessageEmbed {
+	return createEmbed(s, i, title, content, BLUE)
+}
+
 func createEmbed(s *discordgo.Session, _ *discordgo.InteractionCreate, title string, description string, color int) *discordgo.MessageEmbed {
 	return &discordgo.MessageEmbed{
 		Title:       title,
