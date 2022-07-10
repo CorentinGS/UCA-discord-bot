@@ -4,8 +4,6 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-const Version = "v0.1.0"
-
 var (
 	commands = []*discordgo.ApplicationCommand{
 		{
