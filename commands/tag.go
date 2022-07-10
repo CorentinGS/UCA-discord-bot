@@ -3,6 +3,7 @@ package commands
 import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
+	"github.com/corentings/UCA-discord-bot/commands/tag"
 	"github.com/corentings/UCA-discord-bot/models"
 	"github.com/corentings/UCA-discord-bot/utils"
 	"os"
@@ -70,24 +71,16 @@ func TagCommandHandler() func(s *discordgo.Session, i *discordgo.InteractionCrea
 		options := i.ApplicationCommandData().Options
 		responseContent := ""
 
-		// As you can see, names of subcommands (nested, top-level)
-		// and subcommand groups are provided through the arguments.
 		switch options[0].Name {
 		case "add":
-			var AdminRole = os.Getenv("ADMIN_ROLE")
-			if !utils.ExistsInArray(i.Member.Roles, AdminRole) {
-				responseContent = "You are not an admin"
-				break
-			}
-			commandOptions := options[0].Options
-			key := commandOptions[0].StringValue()
-			content := commandOptions[1].StringValue()
-			err := addTag(key, content, i.ChannelID, i.GuildID)
-			if err != nil {
-				responseContent = err.Error()
-			} else {
-				responseContent = fmt.Sprintf("Tag %s added", key)
-			}
+			responseEmbed := tag.AddTagCommandHandler(s, i)
+			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+				Type: discordgo.InteractionResponseChannelMessageWithSource,
+				Data: &discordgo.InteractionResponseData{
+					Embeds: []*discordgo.MessageEmbed{responseEmbed},
+				},
+			})
+			return
 		case "get":
 			commandOptions := options[0].Options
 			key := commandOptions[0].StringValue()
@@ -131,24 +124,6 @@ func TagCommandHandler() func(s *discordgo.Session, i *discordgo.InteractionCrea
 			},
 		})
 	}
-}
-
-func addTag(key, content, channelID, guildID string) error {
-	if key == "" || content == "" {
-		return fmt.Errorf("key or content is empty")
-	}
-	tag, _ := models.GetTag(key, guildID)
-	if tag != nil {
-		return fmt.Errorf("tag already exists")
-	}
-
-	tag = new(models.Tag)
-	tag.SetTag(guildID, channelID, key, content)
-	err := tag.CreateTag()
-	if err != nil {
-		return err
-	}
-	return nil
 }
 
 func deleteTag(key, guildID string) error {
