@@ -13,13 +13,15 @@ type Tag struct {
 	ChannelID string
 	Key       string
 	Content   string
+	ImageURL  string
 }
 
-func (tag *Tag) SetTag(guildID, channelID, key, content string) {
+func (tag *Tag) SetTag(guildID, channelID, key, content, imageURL string) {
 	tag.Key = key
 	tag.ChannelID = channelID
 	tag.GuildID = guildID
 	tag.Content = content
+	tag.ImageURL = imageURL
 }
 
 func (tag *Tag) DeleteTag() error {

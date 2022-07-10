@@ -5,7 +5,7 @@ import (
 	"github.com/corentings/UCA-discord-bot/models"
 )
 
-func addTag(key, content, channelID, guildID string) error {
+func addTag(key, content, channelID, guildID, imageURL string) error {
 	if key == "" || content == "" {
 		return fmt.Errorf("key or content is empty")
 	}
@@ -15,7 +15,7 @@ func addTag(key, content, channelID, guildID string) error {
 	}
 
 	tag = new(models.Tag)
-	tag.SetTag(guildID, channelID, key, content)
+	tag.SetTag(guildID, channelID, key, content, imageURL)
 	err := tag.CreateTag()
 	if err != nil {
 		return err

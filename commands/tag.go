@@ -26,6 +26,12 @@ var TagCommand = discordgo.ApplicationCommand{
 					Description: "Content option",
 					Required:    true,
 				},
+				{
+					Type:        discordgo.ApplicationCommandOptionString,
+					Name:        "image-option",
+					Description: "Image option",
+					Required:    true,
+				},
 			},
 		},
 		{
