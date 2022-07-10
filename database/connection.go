@@ -13,7 +13,7 @@ import (
 // MongoInstance contains the Mongo client and database objects
 type MongoInstance struct {
 	Client *mongo.Client
-	Db     *mongo.Database
+	DB     *mongo.Database
 }
 
 var Mg MongoInstance
@@ -61,7 +61,7 @@ func Connect() error {
 	// get collection as ref
 	db := client.Database("uca")
 
-	Mg = MongoInstance{Client: client, Db: db}
+	Mg = MongoInstance{Client: client, DB: db}
 
 	return nil
 }
