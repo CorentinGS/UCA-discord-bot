@@ -4,7 +4,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-const Version = "v0.0.0-alpha"
+const Version = "v0.1.0"
 
 var (
 	commands = []*discordgo.ApplicationCommand{
@@ -13,10 +13,6 @@ var (
 			Description: "Returns the version of the bot",
 		},
 		&KarmaCommand,
-		{
-			Name: "tag-add",
-			Type: discordgo.MessageApplicationCommand,
-		},
 		&TagCommand,
 	}
 
