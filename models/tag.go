@@ -2,6 +2,7 @@ package models
 
 import (
 	"context"
+	"errors"
 	"github.com/corentings/UCA-discord-bot/database"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -14,11 +15,11 @@ type Tag struct {
 	Content   string
 }
 
-func (tag *Tag) SetTag(GuildID, ChannelID, Key, Content string) {
-	tag.Key = Key
-	tag.ChannelID = ChannelID
-	tag.GuildID = GuildID
-	tag.Content = Content
+func (tag *Tag) SetTag(guildID, channelID, key, content string) {
+	tag.Key = key
+	tag.ChannelID = channelID
+	tag.GuildID = guildID
+	tag.Content = content
 }
 
 func (tag *Tag) DeleteTag() error {
@@ -53,7 +54,7 @@ func GetTag(key, guildID string) (*Tag, error) {
 	result := new(Tag)
 	err := collection.FindOne(context.TODO(), bson.D{{"key", key}, {"guildid", guildID}}).Decode(&result)
 	if err != nil {
-		if err == mongo.ErrNoDocuments {
+		if errors.Is(err, mongo.ErrNoDocuments) {
 			// This error means your query did not match any documents.
 			return nil, err
 		}

@@ -6,25 +6,24 @@ import (
 	"github.com/corentings/UCA-discord-bot/utils"
 )
 
-const GREEN = 0x00ff00
-const RED = 0xff0000
-const BLUE = 0x0000ff
-const ORANGE = 0xffa500
-
 func CreateForbiddenEmbed(s *discordgo.Session, i *discordgo.InteractionCreate) *discordgo.MessageEmbed {
-	return createEmbed(s, i, "Forbidden", "⛔ You don't have the required permissions to use this command.", RED)
+	return createEmbed(s, i, "Forbidden", "⛔ You don't have the required permissions to use this command.", utils.RED)
 }
 
 func CreateErrorEmbed(s *discordgo.Session, i *discordgo.InteractionCreate, err error) *discordgo.MessageEmbed {
-	return createEmbed(s, i, "Error", fmt.Sprintf("💢 An error occurred️: %s \n", err.Error()), ORANGE)
+	return createEmbed(s, i, "Error", fmt.Sprintf("💢 An error occurred️: %s \n", err.Error()), utils.ORANGE)
 }
 
 func CreateSuccessEmbed(s *discordgo.Session, i *discordgo.InteractionCreate, message string) *discordgo.MessageEmbed {
-	return createEmbed(s, i, "Success", fmt.Sprintf("✅ %s", message), GREEN)
+	return createEmbed(s, i, "Success", fmt.Sprintf("✅ %s", message), utils.GREEN)
 }
 
 func CreateResponseEmbed(s *discordgo.Session, i *discordgo.InteractionCreate, title, content string) *discordgo.MessageEmbed {
-	return createEmbed(s, i, title, content, BLUE)
+	return createEmbed(s, i, title, content, utils.BLUE)
+}
+
+func CreateHelpEmbed(s *discordgo.Session, i *discordgo.InteractionCreate, command, description string) *discordgo.MessageEmbed {
+	return createEmbed(s, i, fmt.Sprintf("%s help", command), description, utils.PURPLE)
 }
 
 func createEmbed(s *discordgo.Session, _ *discordgo.InteractionCreate, title string, description string, color int) *discordgo.MessageEmbed {
