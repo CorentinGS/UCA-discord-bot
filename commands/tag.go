@@ -71,18 +71,30 @@ func TagCommandHandler() func(s *discordgo.Session, i *discordgo.InteractionCrea
 	return func(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		options := i.ApplicationCommandData().Options
 		var responseEmbed *discordgo.MessageEmbed
+		var err error
 
 		switch options[0].Name {
 		case "add":
-			responseEmbed = tag.AddTagCommandHandler(s, i)
+			responseEmbed, err = tag.AddTagCommandHandler(s, i)
 		case "get":
-			responseEmbed = tag.GetTagCommandHandler(s, i)
+			responseEmbed, err = tag.GetTagCommandHandler(s, i)
 		case "delete":
-			responseEmbed = tag.DeleteTagCommandHandler(s, i)
+			responseEmbed, err = tag.DeleteTagCommandHandler(s, i)
 		case "list":
-			responseEmbed = tag.ListTagCommandHandler(s, i)
+			responseEmbed, err = tag.ListTagCommandHandler(s, i)
 		default:
-			responseEmbed = tag.HelpTagCommandHandler(s, i)
+			responseEmbed, err = tag.HelpTagCommandHandler(s, i)
+		}
+
+		if err != nil {
+			_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+				Type: discordgo.InteractionResponseChannelMessageWithSource,
+				Data: &discordgo.InteractionResponseData{
+					Embeds: []*discordgo.MessageEmbed{responseEmbed},
+					Flags:  discordgo.MessageFlagsEphemeral,
+				},
+			})
+			return
 		}
 
 		_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{

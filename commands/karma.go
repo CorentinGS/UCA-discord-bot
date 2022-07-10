@@ -48,14 +48,27 @@ func KarmaCommandHandler() func(s *discordgo.Session, i *discordgo.InteractionCr
 		options := i.ApplicationCommandData().Options
 
 		var embed *discordgo.MessageEmbed
+		var err error
 
 		switch options[0].Name {
 		case "add":
-			embed = karma.AddKarmaCommandHandler(s, i)
+			embed, err = karma.AddKarmaCommandHandler(s, i)
 		case "show":
-			embed = karma.ShowKarmaCommandHandler(s, i)
+			embed, err = karma.ShowKarmaCommandHandler(s, i)
 		default:
-			embed = karma.HelpKarmaCommandHandler(s, i)
+			embed, err = karma.HelpKarmaCommandHandler(s, i)
+		}
+
+		if err != nil {
+			_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+				Type: discordgo.InteractionResponseChannelMessageWithSource,
+				Data: &discordgo.InteractionResponseData{
+					Embeds: []*discordgo.MessageEmbed{embed},
+					Flags:  discordgo.MessageFlagsEphemeral,
+				},
+			})
+
+			return
 		}
 		_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 			Type: discordgo.InteractionResponseChannelMessageWithSource,
