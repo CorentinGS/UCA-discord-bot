@@ -2,6 +2,7 @@ package models
 
 import (
 	"context"
+	"errors"
 	"github.com/corentings/UCA-discord-bot/database"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -15,7 +16,7 @@ type Karma struct {
 }
 
 func (karma *Karma) CreateKarma() error {
-	collection := database.Mg.Db.Collection("karma")
+	collection := database.Mg.DB.Collection("karma")
 
 	_, err := collection.InsertOne(context.TODO(), karma)
 	if err != nil {
@@ -26,7 +27,7 @@ func (karma *Karma) CreateKarma() error {
 }
 
 func (karma *Karma) UpdateKarma() error {
-	collection := database.Mg.Db.Collection("karma")
+	collection := database.Mg.DB.Collection("karma")
 
 	_, err := collection.UpdateOne(context.TODO(), bson.D{{"userid", karma.UserID}, {"guildid", karma.GuildID}}, bson.D{{"$set", bson.D{{"value", karma.Value}}}})
 	if err != nil {
@@ -47,11 +48,11 @@ func (karma *Karma) AddKarma(amount uint) {
 }
 
 func GetKarma(userID, guildID string) (*Karma, error) {
-	collection := database.Mg.Db.Collection("karma")
+	collection := database.Mg.DB.Collection("karma")
 	result := new(Karma)
 	err := collection.FindOne(context.TODO(), bson.D{{"userid", userID}, {"guildid", guildID}}).Decode(&result)
 	if err != nil {
-		if err == mongo.ErrNoDocuments {
+		if errors.Is(err, mongo.ErrNoDocuments) {
 			// This error means your query did not match any documents.
 			result.SetKarma(userID, guildID, 0)
 			err = result.CreateKarma()
@@ -66,11 +67,11 @@ func GetKarma(userID, guildID string) (*Karma, error) {
 }
 
 func IncreaseKarma(userID, guildID string) (*Karma, error) {
-	collection := database.Mg.Db.Collection("karma")
+	collection := database.Mg.DB.Collection("karma")
 	result := new(Karma)
 	err := collection.FindOne(context.TODO(), bson.D{{"userid", userID}, {"guildid", guildID}}).Decode(&result)
 	if err != nil {
-		if err == mongo.ErrNoDocuments {
+		if errors.Is(err, mongo.ErrNoDocuments) {
 			// This error means your query did not match any documents.
 			result.SetKarma(userID, guildID, 1)
 

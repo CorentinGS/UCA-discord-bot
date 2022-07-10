@@ -36,7 +36,7 @@ func main() {
 	if err := database.Connect(); err != nil {
 		log.Panic("Can't connect database:", err.Error())
 	}
-	log.Println("Connected to database")
+	log.Println("Connected to database successfully")
 
 	defer func() {
 		fmt.Println("Disconnect from database")
@@ -51,6 +51,13 @@ func main() {
 	if err != nil {
 		log.Println("error creating Discord session,", err)
 		return
+	}
+
+	dg.Identify.Presence = discordgo.GatewayStatusUpdate{
+		Game: discordgo.Activity{
+			Name: "UCA",
+			Type: discordgo.ActivityTypeWatching,
+		},
 	}
 
 	// Open a websocket connection to Discord and begin listening.
@@ -68,15 +75,11 @@ func main() {
 		}
 	})
 
-	myCommands := commands.GetCommands()
+	appCommands := commands.GetCommands()
 
-	registeredCommands := make([]*discordgo.ApplicationCommand, len(myCommands))
-	for i, v := range myCommands {
-		cmd, err := dg.ApplicationCommandCreate(dg.State.User.ID, GuildID, v)
-		if err != nil {
-			log.Panicf("Cannot create '%v' command: %v", v.Name, err)
-		}
-		registeredCommands[i] = cmd
+	_, err = dg.ApplicationCommandBulkOverwrite(dg.State.User.ID, GuildID, appCommands)
+	if err != nil {
+		log.Panicf("Error overwriting commands: %v", err)
 	}
 
 	defer dg.Close()
@@ -88,13 +91,11 @@ func main() {
 
 	if true {
 		log.Println("Removing commands...")
-		for _, v := range registeredCommands {
-			err := dg.ApplicationCommandDelete(dg.State.User.ID, GuildID, v.ID)
-			if err != nil {
-				log.Panicf("Cannot delete '%v' command: %v", v.Name, err)
-			}
+		_, err := dg.ApplicationCommandBulkOverwrite(dg.State.User.ID, GuildID, nil)
+		if err != nil {
+			log.Panicf("Cannot delete a command: %v", err)
 		}
+		log.Println("Removed commands")
 	}
-
 	log.Println("Gracefully shutting down.")
 }

@@ -13,17 +13,19 @@ type Tag struct {
 	ChannelID string
 	Key       string
 	Content   string
+	ImageURL  string
 }
 
-func (tag *Tag) SetTag(guildID, channelID, key, content string) {
+func (tag *Tag) SetTag(guildID, channelID, key, content, imageURL string) {
 	tag.Key = key
 	tag.ChannelID = channelID
 	tag.GuildID = guildID
 	tag.Content = content
+	tag.ImageURL = imageURL
 }
 
 func (tag *Tag) DeleteTag() error {
-	collection := database.Mg.Db.Collection("tags")
+	collection := database.Mg.DB.Collection("tags")
 	_, err := collection.DeleteOne(context.TODO(), bson.D{{"key", tag.Key}, {"guildid", tag.GuildID}})
 	if err != nil {
 		return err
@@ -32,7 +34,7 @@ func (tag *Tag) DeleteTag() error {
 }
 
 func (tag *Tag) CreateTag() error {
-	collection := database.Mg.Db.Collection("tags")
+	collection := database.Mg.DB.Collection("tags")
 	_, err := collection.InsertOne(context.TODO(), tag)
 	if err != nil {
 		return err
@@ -41,7 +43,7 @@ func (tag *Tag) CreateTag() error {
 }
 
 func (tag *Tag) UpdateTag() error {
-	collection := database.Mg.Db.Collection("tags")
+	collection := database.Mg.DB.Collection("tags")
 	_, err := collection.UpdateOne(context.TODO(), bson.D{{"key", tag.Key}, {"guildid", tag.GuildID}}, bson.D{{"$set", bson.D{{"content", tag.Content}}}})
 	if err != nil {
 		return err
@@ -50,7 +52,7 @@ func (tag *Tag) UpdateTag() error {
 }
 
 func GetTag(key, guildID string) (*Tag, error) {
-	collection := database.Mg.Db.Collection("tags")
+	collection := database.Mg.DB.Collection("tags")
 	result := new(Tag)
 	err := collection.FindOne(context.TODO(), bson.D{{"key", key}, {"guildid", guildID}}).Decode(&result)
 	if err != nil {
@@ -64,7 +66,7 @@ func GetTag(key, guildID string) (*Tag, error) {
 }
 
 func GetAllTags(guildID string) ([]*Tag, error) {
-	collection := database.Mg.Db.Collection("tags")
+	collection := database.Mg.DB.Collection("tags")
 	var results []*Tag
 	cur, err := collection.Find(context.TODO(), bson.D{{"guildid", guildID}})
 	if err != nil {
@@ -86,7 +88,7 @@ func GetAllTags(guildID string) ([]*Tag, error) {
 }
 
 func GetAllTagsByChannel(channel string) ([]*Tag, error) {
-	collection := database.Mg.Db.Collection("tags")
+	collection := database.Mg.DB.Collection("tags")
 	var results []*Tag
 	cur, err := collection.Find(context.TODO(), bson.D{{"channelid", channel}})
 	if err != nil {

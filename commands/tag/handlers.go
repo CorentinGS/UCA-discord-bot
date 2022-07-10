@@ -13,10 +13,14 @@ func AddTagCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) 
 	if !utils.HasPermissionsAdmin(i.Member) {
 		return embeds.CreateForbiddenEmbed(s, i), fmt.Errorf("you don't have permissions to add tags")
 	}
+	imageURL := ""
 	commandOptions := options[0].Options
 	key := commandOptions[0].StringValue()
 	content := commandOptions[1].StringValue()
-	err := addTag(key, content, i.ChannelID, i.GuildID)
+	if len(commandOptions) > 2 {
+		imageURL = commandOptions[2].StringValue()
+	}
+	err := addTag(key, content, i.ChannelID, i.GuildID, imageURL)
 	if err != nil {
 		return embeds.CreateErrorEmbed(s, i, err), err
 	}
@@ -30,7 +34,13 @@ func GetTagCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) 
 	if err != nil {
 		return embeds.CreateErrorEmbed(s, i, err), err
 	}
-	return embeds.CreateResponseEmbed(s, i, key, tag.Content), nil
+	embed := embeds.CreateResponseEmbed(s, i, key, tag.Content)
+	if tag.ImageURL != "" {
+		embed.Image = &discordgo.MessageEmbedImage{
+			URL: tag.ImageURL,
+		}
+	}
+	return embed, nil
 }
 
 func DeleteTagCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) (*discordgo.MessageEmbed, error) {
