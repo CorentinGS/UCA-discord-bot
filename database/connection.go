@@ -32,7 +32,6 @@ func loadVar() {
 	if os.Getenv("APP_ENV") == "development" {
 		log.Println("Running in development mode")
 		MongoURL = os.Getenv("DEBUG_MONGO_URL") // Get url from env
-
 	} else {
 		log.Println("Running in production mode")
 		MongoURL = os.Getenv("MONGO_URL") // Get url from env
@@ -40,7 +39,6 @@ func loadVar() {
 }
 
 func Connect() error {
-
 	loadVar()
 
 	// Set client options

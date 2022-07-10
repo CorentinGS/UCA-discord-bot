@@ -1,7 +1,6 @@
 package commands
 
 import (
-	"errors"
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"github.com/corentings/UCA-discord-bot/models"
@@ -118,7 +117,7 @@ func TagCommandHandler() func(s *discordgo.Session, i *discordgo.InteractionCrea
 			if err != nil {
 				responseContent = err.Error()
 			} else {
-				responseContent = fmt.Sprintf("Tags:\n")
+				responseContent = "Tags:\n"
 				for _, tag := range tags {
 					responseContent += fmt.Sprintf("%s\n", tag.Key)
 				}
@@ -136,11 +135,11 @@ func TagCommandHandler() func(s *discordgo.Session, i *discordgo.InteractionCrea
 
 func addTag(key, content, channelID, guildID string) error {
 	if key == "" || content == "" {
-		return errors.New(fmt.Sprintf("key or content is empty"))
+		return fmt.Errorf("key or content is empty")
 	}
 	tag, _ := models.GetTag(key, guildID)
 	if tag != nil {
-		return errors.New(fmt.Sprintf("tag already exists"))
+		return fmt.Errorf("tag already exists")
 	}
 
 	tag = new(models.Tag)
@@ -154,11 +153,11 @@ func addTag(key, content, channelID, guildID string) error {
 
 func deleteTag(key, guildID string) error {
 	if key == "" {
-		return errors.New(fmt.Sprintf("key is empty"))
+		return fmt.Errorf("key is empty")
 	}
 	tag, _ := models.GetTag(key, guildID)
 	if tag == nil {
-		return errors.New(fmt.Sprintf("tag does not exist"))
+		return fmt.Errorf("tag does not exist")
 	}
 	err := tag.DeleteTag()
 	if err != nil {
@@ -171,6 +170,6 @@ func getAllTags(guildID string) ([]*models.Tag, error) {
 	return models.GetAllTags(guildID)
 }
 
-func etAllTagsByChannel(channelID string) ([]*models.Tag, error) {
+func getAllTagsByChannel(channelID string) ([]*models.Tag, error) {
 	return models.GetAllTagsByChannel(channelID)
 }

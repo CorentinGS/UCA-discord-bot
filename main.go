@@ -25,7 +25,6 @@ func loadVar() {
 	}
 	Token = os.Getenv("TOKEN")
 	GuildID = os.Getenv("GUILD_ID")
-
 }
 
 func init() {
