@@ -84,15 +84,17 @@ func KarmaCommandHandler() func(s *discordgo.Session, i *discordgo.InteractionCr
 					content = fmt.Sprintf("Your karma is : %d", karma.Value)
 				}
 			}
-
 		}
 
-		s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+		err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 			Type: discordgo.InteractionResponseChannelMessageWithSource,
 			Data: &discordgo.InteractionResponseData{
 				Content: content,
 			},
 		})
+		if err != nil {
+			return
+		}
 	}
 }
 
