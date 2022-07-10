@@ -70,7 +70,7 @@ var TagCommand = discordgo.ApplicationCommand{
 func TagCommandHandler() func(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	return func(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		options := i.ApplicationCommandData().Options
-		responseEmbed := new(discordgo.MessageEmbed)
+		var responseEmbed *discordgo.MessageEmbed
 
 		switch options[0].Name {
 		case "add":
