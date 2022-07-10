@@ -8,46 +8,46 @@ import (
 	"github.com/corentings/UCA-discord-bot/utils"
 )
 
-func AddTagCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) *discordgo.MessageEmbed {
+func AddTagCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) (*discordgo.MessageEmbed, error) {
 	options := i.ApplicationCommandData().Options
 	if !utils.HasPermissionsAdmin(i.Member) {
-		return embeds.CreateForbiddenEmbed(s, i)
+		return embeds.CreateForbiddenEmbed(s, i), fmt.Errorf("you don't have permissions to add tags")
 	}
 	commandOptions := options[0].Options
 	key := commandOptions[0].StringValue()
 	content := commandOptions[1].StringValue()
 	err := addTag(key, content, i.ChannelID, i.GuildID)
 	if err != nil {
-		return embeds.CreateErrorEmbed(s, i, err)
+		return embeds.CreateErrorEmbed(s, i, err), err
 	}
-	return embeds.CreateSuccessEmbed(s, i, fmt.Sprintf("Tag %s added", key))
+	return embeds.CreateSuccessEmbed(s, i, fmt.Sprintf("Tag %s added", key)), nil
 }
-func GetTagCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) *discordgo.MessageEmbed {
+func GetTagCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) (*discordgo.MessageEmbed, error) {
 	options := i.ApplicationCommandData().Options
 	commandOptions := options[0].Options
 	key := commandOptions[0].StringValue()
 	tag, err := models.GetTag(key, i.GuildID)
 	if err != nil {
-		return embeds.CreateErrorEmbed(s, i, err)
+		return embeds.CreateErrorEmbed(s, i, err), err
 	}
-	return embeds.CreateResponseEmbed(s, i, key, tag.Content)
+	return embeds.CreateResponseEmbed(s, i, key, tag.Content), nil
 }
 
-func DeleteTagCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) *discordgo.MessageEmbed {
+func DeleteTagCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) (*discordgo.MessageEmbed, error) {
 	options := i.ApplicationCommandData().Options
 	if !utils.HasPermissionsAdmin(i.Member) {
-		return embeds.CreateForbiddenEmbed(s, i)
+		return embeds.CreateForbiddenEmbed(s, i), fmt.Errorf("you don't have permissions to delete tags")
 	}
 	commandOptions := options[0].Options
 	key := commandOptions[0].StringValue()
 	err := deleteTag(key, i.GuildID)
 	if err != nil {
-		return embeds.CreateErrorEmbed(s, i, err)
+		return embeds.CreateErrorEmbed(s, i, err), err
 	}
-	return embeds.CreateSuccessEmbed(s, i, fmt.Sprintf("Tag %s deleted", key))
+	return embeds.CreateSuccessEmbed(s, i, fmt.Sprintf("Tag %s deleted", key)), nil
 }
 
-func HelpTagCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) *discordgo.MessageEmbed {
+func HelpTagCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) (*discordgo.MessageEmbed, error) {
 	embed := embeds.CreateHelpEmbed(s, i, "tag", "Manage tags")
 	commands := []struct {
 		Name string
@@ -72,13 +72,13 @@ func HelpTagCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate)
 			Value: command.Desc,
 		})
 	}
-	return embed
+	return embed, nil
 }
 
-func ListTagCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) *discordgo.MessageEmbed {
+func ListTagCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) (*discordgo.MessageEmbed, error) {
 	tags, err := getAllTags(i.GuildID)
 	if err != nil {
-		return embeds.CreateErrorEmbed(s, i, err)
+		return embeds.CreateErrorEmbed(s, i, err), err
 	}
 	responseContent := "Tags:\n"
 	for _, tag := range tags {
@@ -95,7 +95,7 @@ func ListTagCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate)
 	for channelID, tagSlice := range mappedTags {
 		channel, err := s.Channel(channelID)
 		if err != nil {
-			return embeds.CreateErrorEmbed(s, i, err)
+			return embeds.CreateErrorEmbed(s, i, err), err
 		}
 		var result string
 		for _, tag := range tagSlice {
@@ -107,5 +107,5 @@ func ListTagCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate)
 			Value: result,
 		})
 	}
-	return embed
+	return embed, nil
 }
