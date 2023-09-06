@@ -3,6 +3,7 @@ package models
 import (
 	"context"
 	"errors"
+
 	"github.com/corentings/UCA-discord-bot/database"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"

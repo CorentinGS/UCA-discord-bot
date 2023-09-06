@@ -2,12 +2,13 @@ package database
 
 import (
 	"context"
-	"github.com/joho/godotenv"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
 	"os"
 	"time"
+
+	"github.com/joho/godotenv"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // MongoInstance contains the Mongo client and database objects
@@ -18,9 +19,7 @@ type MongoInstance struct {
 
 var Mg MongoInstance
 
-var (
-	MongoURL string
-)
+var MongoURL string
 
 func loadVar() {
 	// Load the .env file

@@ -12,12 +12,18 @@ var (
 		},
 		&KarmaCommand,
 		&TagCommand,
+		&GoogleCommand,
+		&DdgCommand,
+		&StartpageCommand,
 	}
 
 	commandHandlers = map[string]func(s *discordgo.Session, i *discordgo.InteractionCreate){
 		"get-version": VersionCommand(),
 		"karma":       KarmaCommandHandler(),
 		"tag":         TagCommandHandler(),
+		"google":      GoogleCommandHandler(),
+		"ddg":         DdgCommandHandler(),
+		"startpage":   StartpageCommandHandler(),
 	}
 )
 

@@ -2,6 +2,7 @@ package embeds
 
 import (
 	"fmt"
+
 	"github.com/bwmarrin/discordgo"
 	"github.com/corentings/UCA-discord-bot/utils"
 )

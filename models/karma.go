@@ -3,10 +3,11 @@ package models
 import (
 	"context"
 	"errors"
+	"log"
+
 	"github.com/corentings/UCA-discord-bot/database"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
-	"log"
 )
 
 type Karma struct {

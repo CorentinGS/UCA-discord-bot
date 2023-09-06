@@ -2,6 +2,7 @@ package tag
 
 import (
 	"fmt"
+
 	"github.com/corentings/UCA-discord-bot/models"
 )
 
@@ -40,8 +41,4 @@ func deleteTag(key, guildID string) error {
 
 func getAllTags(guildID string) ([]*models.Tag, error) {
 	return models.GetAllTags(guildID)
-}
-
-func getAllTagsByChannel(channelID string) ([]*models.Tag, error) {
-	return models.GetAllTagsByChannel(channelID)
 }

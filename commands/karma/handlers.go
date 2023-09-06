@@ -2,6 +2,7 @@ package karma
 
 import (
 	"fmt"
+
 	"github.com/bwmarrin/discordgo"
 	"github.com/corentings/UCA-discord-bot/commands/embeds"
 	"github.com/corentings/UCA-discord-bot/models"
@@ -55,10 +56,12 @@ func HelpKarmaCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreat
 		Name string
 		Desc string
 	}{
-		{Name: "add",
+		{
+			Name: "add",
 			Desc: "Add karma to a user",
 		},
-		{Name: "show",
+		{
+			Name: "show",
 			Desc: "Show karma of a user",
 		},
 	}

@@ -2,14 +2,14 @@ package main
 
 import (
 	"context"
-	"fmt"
+	"log"
+	"os"
+	"os/signal"
+
 	"github.com/bwmarrin/discordgo"
 	"github.com/corentings/UCA-discord-bot/commands"
 	"github.com/corentings/UCA-discord-bot/database"
 	"github.com/joho/godotenv"
-	"log"
-	"os"
-	"os/signal"
 )
 
 var (
@@ -39,7 +39,7 @@ func main() {
 	log.Println("Connected to database successfully")
 
 	defer func() {
-		fmt.Println("Disconnect from database")
+		log.Println("Disconnect from database")
 		err := database.Mg.Client.Disconnect(context.TODO())
 		if err != nil {
 			return

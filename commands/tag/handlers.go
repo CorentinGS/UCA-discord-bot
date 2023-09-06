@@ -2,6 +2,7 @@ package tag
 
 import (
 	"fmt"
+
 	"github.com/bwmarrin/discordgo"
 	"github.com/corentings/UCA-discord-bot/commands/embeds"
 	"github.com/corentings/UCA-discord-bot/models"
@@ -26,6 +27,7 @@ func AddTagCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) 
 	}
 	return embeds.CreateSuccessEmbed(s, i, fmt.Sprintf("Tag %s added", key)), nil
 }
+
 func GetTagCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) (*discordgo.MessageEmbed, error) {
 	options := i.ApplicationCommandData().Options
 	commandOptions := options[0].Options
@@ -63,16 +65,20 @@ func HelpTagCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate)
 		Name string
 		Desc string
 	}{
-		{Name: "add",
+		{
+			Name: "add",
 			Desc: "Add a tag",
 		},
-		{Name: "get",
+		{
+			Name: "get",
 			Desc: "Get a tag",
 		},
-		{Name: "delete",
+		{
+			Name: "delete",
 			Desc: "Delete a tag",
 		},
-		{Name: "list",
+		{
+			Name: "list",
 			Desc: "List all tags",
 		},
 	}
