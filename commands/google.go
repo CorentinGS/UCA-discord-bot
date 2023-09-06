@@ -50,8 +50,7 @@ func GoogleCommandHandler() func(s *discordgo.Session, i *discordgo.InteractionC
 
 		var embed *discordgo.MessageEmbed
 
-		commandOptions := options[0].Options
-		search := commandOptions[0].StringValue()
+		search := options[0].StringValue()
 
 		embed = &discordgo.MessageEmbed{
 			Title:       "Google Search",
@@ -81,8 +80,7 @@ func DdgCommandHandler() func(s *discordgo.Session, i *discordgo.InteractionCrea
 
 		var embed *discordgo.MessageEmbed
 
-		commandOptions := options[0].Options
-		search := commandOptions[0].StringValue()
+		search := options[0].StringValue()
 
 		embed = &discordgo.MessageEmbed{
 			Title:       "Duckduckgo",
@@ -112,8 +110,7 @@ func StartpageCommandHandler() func(s *discordgo.Session, i *discordgo.Interacti
 
 		var embed *discordgo.MessageEmbed
 
-		commandOptions := options[0].Options
-		search := commandOptions[0].StringValue()
+		search := options[0].StringValue()
 
 		embed = &discordgo.MessageEmbed{
 			Title:       "Startpage",
