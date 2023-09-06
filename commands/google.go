@@ -3,6 +3,7 @@ package commands
 import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/corentings/UCA-discord-bot/utils"
+	"strings"
 )
 
 var GoogleCommand = discordgo.ApplicationCommand{
@@ -52,6 +53,9 @@ func GoogleCommandHandler() func(s *discordgo.Session, i *discordgo.InteractionC
 
 		search := options[0].StringValue()
 
+		// replace space with +
+		search = strings.Replace(search, " ", "+", -1)
+
 		embed = &discordgo.MessageEmbed{
 			Title:       "Google Search",
 			Description: "Votre recherche est prête:  **[Voir le resultat](http://lmgtfy2.com/?q=" + search + (")**"),
@@ -81,6 +85,8 @@ func DdgCommandHandler() func(s *discordgo.Session, i *discordgo.InteractionCrea
 		var embed *discordgo.MessageEmbed
 
 		search := options[0].StringValue()
+		// replace space with +
+		search = strings.Replace(search, " ", "+", -1)
 
 		embed = &discordgo.MessageEmbed{
 			Title:       "Duckduckgo",
@@ -111,6 +117,8 @@ func StartpageCommandHandler() func(s *discordgo.Session, i *discordgo.Interacti
 		var embed *discordgo.MessageEmbed
 
 		search := options[0].StringValue()
+		// replace space with +
+		search = strings.Replace(search, " ", "+", -1)
 
 		embed = &discordgo.MessageEmbed{
 			Title:       "Startpage",
