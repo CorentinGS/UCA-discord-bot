@@ -1,6 +1,12 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:recommended"
+  "labels": ["dependencies"],
+  "dependencyDashboard": true,
+  "extends": [ "config:recommended", ":disableRateLimiting", "group:recommended", "security:openssf-scorecard", "group:linters" ],
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest", "rollback"],
+      "automerge": true
+    }
   ]
 }
